@@ -1,0 +1,206 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PostStatus {
+  draft
+  published
+}
+
+enum PostVisibility {
+  public
+  private
+}
+
+enum BannerStatus {
+  active
+  inactive
+}
+
+enum BannerPage {
+  home
+  projects
+  news
+  about
+  contact
+  recruitment
+  internal
+}
+
+enum PropertyCategory {
+  mat_bang
+  nha_dat
+  toa_nha
+  van_phong
+}
+
+enum PropertyStatus {
+  active
+  inactive
+}
+
+enum FormSubmissionStatus {
+  new
+  processed
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  posts     Post[]
+}
+
+model Post {
+  id              String         @id @default(cuid())
+  title           String
+  slug            String         @unique
+  excerpt         String
+  content         String         @db.Text
+  image           String
+  bannerImage     String?
+  bannerOverlay   Boolean        @default(false)
+  tags            String[]       @default([])
+  metaTitle       String?
+  metaDescription String?
+  status          PostStatus     @default(draft)
+  visibility      PostVisibility @default(public)
+  featured        Boolean        @default(false)
+  publishedAt     DateTime
+  views           Int            @default(0)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  categoryId      String
+  category        Category       @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  @@index([status, visibility, publishedAt])
+  @@index([featured])
+  @@index([categoryId])
+}
+
+model Banner {
+  id        String       @id @default(cuid())
+  title     String
+  image     String
+  link      String
+  page      BannerPage
+  status    BannerStatus @default(active)
+  clicks    Int          @default(0)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([page, status])
+}
+
+model Property {
+  id          String           @id @default(cuid())
+  slug        String           @unique
+  title       String
+  location    String
+  district    String?
+  price       String
+  priceMin    Int?
+  priceMax    Int?
+  area        String?
+  areaMin     Float?
+  areaMax     Float?
+  image       String
+  images      String[]         @default([])
+  badge       String?
+  description String?          @db.Text
+  category    PropertyCategory
+  status      PropertyStatus   @default(active)
+  viewsCount  Int              @default(0)
+  views       String?
+  posted      String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([category, status])
+  @@index([district])
+}
+
+model SiteSettings {
+  id            String   @id @default("default")
+  siteName      String
+  tagline       String
+  hotline       String
+  email         String
+  emailHr       String?
+  address       String
+  officeBitexco String?
+  heroImage     String
+  logoUrl       String?
+  zaloIconUrl   String?
+  partners      String[] @default([])
+  updatedAt     DateTime @updatedAt
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  image     String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ContactSubmission {
+  id        String               @id @default(cuid())
+  name      String
+  email     String
+  phone     String
+  subject   String
+  message   String               @db.Text
+  status    FormSubmissionStatus @default(new)
+  createdAt DateTime             @default(now())
+}
+
+model RecruitmentApplication {
+  id        String               @id @default(cuid())
+  name      String
+  email     String
+  phone     String
+  position  String
+  cvUrl     String?
+  message   String               @db.Text
+  status    FormSubmissionStatus @default(new)
+  createdAt DateTime             @default(now())
+}
+
+model NewsletterSubscription {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  active       Boolean  @default(true)
+  subscribedAt DateTime @default(now())
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model MediaAsset {
+  id           String   @id @default(cuid())
+  publicId     String   @unique
+  url          String
+  secureUrl    String
+  format       String?
+  width        Int?
+  height       Int?
+  bytes        Int?
+  folder       String?
+  createdAt    DateTime @default(now())
+}

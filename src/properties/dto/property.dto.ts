@@ -7,7 +7,23 @@ import {
   MinLength,
 } from 'class-validator';
 import { PropertyCategory, PropertyStatus } from '@prisma/client';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
+import {
+  PROPERTY_CATEGORY_REVERSE,
+  type PropertyCategoryApi,
+} from '../../common/utils/slug.util';
+
+/** Accept both `mat_bang` and `mat-bang` from clients */
+function toPropertyCategoryEnum({ value }: { value?: string }) {
+  if (!value) return value;
+  if (Object.values(PropertyCategory).includes(value as PropertyCategory)) {
+    return value;
+  }
+  if (value in PROPERTY_CATEGORY_REVERSE) {
+    return PROPERTY_CATEGORY_REVERSE[value as PropertyCategoryApi];
+  }
+  return value;
+}
 
 export class CreatePropertyDto {
   @IsString()
@@ -68,6 +84,7 @@ export class CreatePropertyDto {
   @IsString()
   description?: string;
 
+  @Transform(toPropertyCategoryEnum)
   @IsEnum(PropertyCategory)
   category: PropertyCategory;
 
@@ -147,6 +164,7 @@ export class UpdatePropertyDto {
   description?: string;
 
   @IsOptional()
+  @Transform(toPropertyCategoryEnum)
   @IsEnum(PropertyCategory)
   category?: PropertyCategory;
 
@@ -165,6 +183,7 @@ export class UpdatePropertyDto {
 
 export class PropertyQueryDto {
   @IsOptional()
+  @Transform(toPropertyCategoryEnum)
   @IsEnum(PropertyCategory)
   category?: PropertyCategory;
 
@@ -205,8 +224,12 @@ export class PropertyQueryDto {
   sort?: 'newest' | 'price_asc' | 'price_desc';
 
   @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
   page?: number;
 
   @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
   pageSize?: number;
 }

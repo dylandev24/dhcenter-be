@@ -183,13 +183,19 @@ model NewsletterSubscription {
   subscribedAt DateTime @default(now())
 }
 
+enum AdminRole {
+  admin
+  staff
+}
+
 model AdminUser {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id           String    @id @default(cuid())
+  email        String    @unique
   passwordHash String
   name         String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  role         AdminRole @default(staff)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model MediaAsset {

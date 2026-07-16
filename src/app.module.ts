@@ -14,7 +14,9 @@ import { SettingsModule } from './settings/settings.module';
 import { FormsModule } from './forms/forms.module';
 import { TeamModule } from './team/team.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { UsersModule } from './users/users.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
+import { RolesGuard } from './common/guards/roles.guard';
 import { HealthController } from './health.controller';
 
 @Module({
@@ -56,6 +58,7 @@ import { HealthController } from './health.controller';
     FormsModule,
     TeamModule,
     CloudinaryModule,
+    UsersModule,
   ],
   controllers: [HealthController],
   providers: [
@@ -66,6 +69,10 @@ import { HealthController } from './health.controller';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })

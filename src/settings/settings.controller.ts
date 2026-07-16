@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Patch } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '../common/decorators/public.decorator';
+import { Roles } from '../common/decorators/roles.decorator';
 import { UpdateSettingsDto } from './dto/settings.dto';
 import { SettingsService } from './settings.service';
 
@@ -16,6 +17,7 @@ export class SettingsController {
   }
 
   @ApiBearerAuth()
+  @Roles('admin')
   @Patch()
   update(@Body() dto: UpdateSettingsDto) {
     return this.settingsService.update(dto);

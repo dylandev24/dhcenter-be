@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '../common/decorators/public.decorator';
+import { Roles } from '../common/decorators/roles.decorator';
 import { CreatePostDto, PostQueryDto, UpdatePostDto } from './dto/post.dto';
 import { PostsService } from './posts.service';
 
@@ -48,6 +49,7 @@ export class PostsController {
   }
 
   @ApiBearerAuth()
+  @Roles('admin')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.postsService.remove(id);

@@ -22,7 +22,8 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "prisma db seed",
     "db:setup": "prisma migrate dev && prisma db seed",
-    "db:push": "prisma db push && prisma db seed"
+    "db:push": "prisma db push && prisma db seed",
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "ts-node --transpile-only prisma/seed.ts"

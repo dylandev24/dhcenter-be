@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '../common/decorators/public.decorator';
+import { Roles } from '../common/decorators/roles.decorator';
 import {
   CreatePropertyDto,
   PropertyQueryDto,
@@ -52,6 +53,7 @@ export class PropertiesController {
   }
 
   @ApiBearerAuth()
+  @Roles('admin')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.propertiesService.remove(id);

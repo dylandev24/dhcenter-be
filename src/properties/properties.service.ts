@@ -23,7 +23,11 @@ export interface PropertyResponse {
   title: string;
   location: string;
   district?: string;
+  ward?: string;
+  streetAddress?: string;
   price: string;
+  width?: string;
+  length?: string;
   area?: string;
   image: string;
   images: string[];
@@ -45,7 +49,11 @@ export class PropertiesService {
     title: string;
     location: string;
     district: string | null;
+    ward?: string | null;
+    streetAddress?: string | null;
     price: string;
+    width?: string | null;
+    length?: string | null;
     area: string | null;
     image: string;
     images: string[];
@@ -62,7 +70,11 @@ export class PropertiesService {
       title: property.title,
       location: property.location,
       district: property.district ?? undefined,
+      ward: property.ward ?? undefined,
+      streetAddress: property.streetAddress ?? undefined,
       price: property.price,
+      width: property.width ?? undefined,
+      length: property.length ?? undefined,
       area: property.area ?? undefined,
       image: property.image,
       images: property.images,
@@ -171,9 +183,13 @@ export class PropertiesService {
         slug,
         location: dto.location,
         district: dto.district,
+        ward: dto.ward,
+        streetAddress: dto.streetAddress,
         price: dto.price,
         priceMin: dto.priceMin,
         priceMax: dto.priceMax,
+        width: dto.width,
+        length: dto.length,
         area: dto.area,
         areaMin: dto.areaMin,
         areaMax: dto.areaMax,
@@ -207,9 +223,13 @@ export class PropertiesService {
         slug: dto.slug,
         location: dto.location,
         district: dto.district,
+        ward: dto.ward,
+        streetAddress: dto.streetAddress,
         price: dto.price,
         priceMin: dto.priceMin,
         priceMax: dto.priceMax,
+        width: dto.width,
+        length: dto.length,
         area: dto.area,
         areaMin: dto.areaMin,
         areaMax: dto.areaMax,

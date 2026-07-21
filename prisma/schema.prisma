@@ -100,28 +100,32 @@ model Banner {
 }
 
 model Property {
-  id          String           @id @default(cuid())
-  slug        String           @unique
-  title       String
-  location    String
-  district    String?
-  price       String
-  priceMin    Int?
-  priceMax    Int?
-  area        String?
-  areaMin     Float?
-  areaMax     Float?
-  image       String
-  images      String[]         @default([])
-  badge       String?
-  description String?          @db.Text
-  category    PropertyCategory
-  status      PropertyStatus   @default(active)
-  viewsCount  Int              @default(0)
-  views       String?
-  posted      String?
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  id            String           @id @default(cuid())
+  slug          String           @unique
+  title         String
+  location      String
+  district      String?
+  ward          String?
+  streetAddress String?
+  price         String
+  priceMin      Int?
+  priceMax      Int?
+  width         String?
+  length        String?
+  area          String?
+  areaMin       Float?
+  areaMax       Float?
+  image         String
+  images        String[]         @default([])
+  badge         String?
+  description   String?          @db.Text
+  category      PropertyCategory
+  status        PropertyStatus   @default(active)
+  viewsCount    Int              @default(0)
+  views         String?
+  posted        String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
 
   @@index([category, status])
   @@index([district])

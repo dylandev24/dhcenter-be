@@ -41,6 +41,14 @@ export class CreatePropertyDto {
   @IsString()
   district?: string;
 
+  @IsOptional()
+  @IsString()
+  ward?: string;
+
+  @IsOptional()
+  @IsString()
+  streetAddress?: string;
+
   @IsString()
   price: string;
 
@@ -53,6 +61,14 @@ export class CreatePropertyDto {
   @Type(() => Number)
   @IsNumber()
   priceMax?: number;
+
+  @IsOptional()
+  @IsString()
+  width?: string;
+
+  @IsOptional()
+  @IsString()
+  length?: string;
 
   @IsOptional()
   @IsString()
@@ -120,6 +136,14 @@ export class UpdatePropertyDto {
 
   @IsOptional()
   @IsString()
+  ward?: string;
+
+  @IsOptional()
+  @IsString()
+  streetAddress?: string;
+
+  @IsOptional()
+  @IsString()
   price?: string;
 
   @IsOptional()
@@ -131,6 +155,14 @@ export class UpdatePropertyDto {
   @Type(() => Number)
   @IsNumber()
   priceMax?: number;
+
+  @IsOptional()
+  @IsString()
+  width?: string;
+
+  @IsOptional()
+  @IsString()
+  length?: string;
 
   @IsOptional()
   @IsString()

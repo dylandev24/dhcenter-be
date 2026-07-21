@@ -395,8 +395,8 @@ async function main() {
   await prisma.siteSettings.create({
     data: {
       id: 'default',
-      siteName: 'DH Center',
-      tagline: 'DH Center Estate',
+      siteName: 'DHCENTER',
+      tagline: 'DHCENTER Estate',
       hotline: '0941 977 234',
       email: 'contact@dhcenter.com',
       emailHr: 'connectland61@gmail.com',

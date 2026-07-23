@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -109,6 +110,7 @@ export class PropertiesService {
 
     if (query.category) where.category = this.parseCategory(query.category);
     if (query.status) where.status = query.status;
+    if (query.posted) where.posted = query.posted;
     if (query.district) {
       where.district = { contains: query.district, mode: 'insensitive' };
     }
@@ -172,7 +174,7 @@ export class PropertiesService {
     return this.mapProperty(property);
   }
 
-  async create(dto: CreatePropertyDto): Promise<PropertyResponse> {
+  async create(dto: CreatePropertyDto, currentUser?: any): Promise<PropertyResponse> {
     const slug = dto.slug?.trim() || slugify(dto.title);
     const existing = await this.prisma.property.findUnique({ where: { slug } });
     if (existing) throw new ConflictException('Slug already exists');
@@ -200,14 +202,21 @@ export class PropertiesService {
         category: this.parseCategory(dto.category),
         status: dto.status ?? PropertyStatus.active,
         views: dto.views,
-        posted: dto.posted,
+        posted: dto.posted || currentUser?.name || 'Hệ thống',
       },
     });
     return this.mapProperty(property);
   }
 
-  async update(id: string, dto: UpdatePropertyDto): Promise<PropertyResponse> {
-    await this.findById(id);
+  async update(id: string, dto: UpdatePropertyDto, currentUser?: any): Promise<PropertyResponse> {
+    const existing = await this.prisma.property.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException('Property not found');
+
+    if (currentUser && currentUser.role !== 'admin') {
+      if (existing.posted && existing.posted !== currentUser.name) {
+        throw new ForbiddenException('Bạn không có quyền chỉnh sửa tin đăng của người khác');
+      }
+    }
 
     if (dto.slug) {
       const conflict = await this.prisma.property.findFirst({
@@ -246,8 +255,16 @@ export class PropertiesService {
     return this.mapProperty(property);
   }
 
-  async remove(id: string): Promise<void> {
-    await this.findById(id);
+  async remove(id: string, currentUser?: any): Promise<void> {
+    const existing = await this.prisma.property.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException('Property not found');
+
+    if (currentUser && currentUser.role !== 'admin') {
+      if (existing.posted && existing.posted !== currentUser.name) {
+        throw new ForbiddenException('Bạn không có quyền xóa tin đăng của người khác');
+      }
+    }
+
     await this.prisma.property.delete({ where: { id } });
   }
 }

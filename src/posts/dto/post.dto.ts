@@ -157,6 +157,10 @@ export class PostQueryDto {
   featured?: boolean;
 
   @IsOptional()
+  @IsString()
+  authorId?: string;
+
+  @IsOptional()
   page?: number;
 
   @IsOptional()

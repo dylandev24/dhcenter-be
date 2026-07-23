@@ -79,10 +79,13 @@ model Post {
   updatedAt       DateTime       @updatedAt
   categoryId      String
   category        Category       @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  authorId        String?
+  author          AdminUser?     @relation(fields: [authorId], references: [id], onDelete: SetNull)
 
   @@index([status, visibility, publishedAt])
   @@index([featured])
   @@index([categoryId])
+  @@index([authorId])
 }
 
 model Banner {
@@ -200,6 +203,7 @@ model AdminUser {
   role         AdminRole @default(staff)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+  posts        Post[]
 }
 
 model MediaAsset {

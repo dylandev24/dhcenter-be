@@ -20,12 +20,15 @@ export class AuthService {
   ) { }
 
   async login(dto: LoginDto) {
-    const user = await this.prisma.adminUser.findUnique({
-      where: { email: dto.email },
+    const cleanEmail = dto.email ? dto.email.trim().toLowerCase() : '';
+    const user = await this.prisma.adminUser.findFirst({
+      where: {
+        email: { equals: cleanEmail, mode: 'insensitive' },
+      },
     });
 
     if (!user || !(await bcrypt.compare(dto.password, user.passwordHash))) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Email hoặc mật khẩu không chính xác');
     }
 
     const payload: JwtPayload = { sub: user.id, email: user.email };

@@ -28,16 +28,17 @@ export class UsersService {
   }
 
   async create(dto: CreateUserDto) {
-    const existing = await this.prisma.adminUser.findUnique({
-      where: { email: dto.email },
+    const cleanEmail = dto.email.trim().toLowerCase();
+    const existing = await this.prisma.adminUser.findFirst({
+      where: { email: { equals: cleanEmail, mode: 'insensitive' } },
     });
     if (existing) throw new ConflictException('Email này đã được đăng ký sử dụng');
 
     const passwordHash = await bcrypt.hash(dto.password, 10);
     const user = await this.prisma.adminUser.create({
       data: {
-        email: dto.email,
-        name: dto.name,
+        email: cleanEmail,
+        name: dto.name.trim(),
         passwordHash,
         role: dto.role,
       },
@@ -49,17 +50,19 @@ export class UsersService {
     const user = await this.prisma.adminUser.findUnique({ where: { id } });
     if (!user) throw new NotFoundException('Không tìm thấy tài khoản nhân viên');
 
-    if (dto.email && dto.email !== user.email) {
-      const existing = await this.prisma.adminUser.findUnique({
-        where: { email: dto.email },
+    const cleanEmail = dto.email ? dto.email.trim().toLowerCase() : user.email;
+
+    if (cleanEmail !== user.email) {
+      const existing = await this.prisma.adminUser.findFirst({
+        where: { email: { equals: cleanEmail, mode: 'insensitive' } },
       });
       if (existing) throw new ConflictException('Email này đã được đăng ký sử dụng');
     }
 
     const data: any = {
-      email: dto.email,
-      name: dto.name,
-      role: dto.role,
+      email: cleanEmail,
+      name: dto.name ? dto.name.trim() : user.name,
+      role: dto.role ?? user.role,
     };
 
     if (dto.password) {

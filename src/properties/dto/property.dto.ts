@@ -256,6 +256,10 @@ export class PropertyQueryDto {
   sort?: 'newest' | 'price_asc' | 'price_desc';
 
   @IsOptional()
+  @IsString()
+  posted?: string;
+
+  @IsOptional()
   @Type(() => Number)
   @IsNumber()
   page?: number;

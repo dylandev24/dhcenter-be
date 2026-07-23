@@ -11,6 +11,7 @@ import {
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '../common/decorators/public.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
 import {
   CreatePropertyDto,
   PropertyQueryDto,
@@ -42,20 +43,24 @@ export class PropertiesController {
 
   @ApiBearerAuth()
   @Post()
-  create(@Body() dto: CreatePropertyDto) {
-    return this.propertiesService.create(dto);
+  create(@Body() dto: CreatePropertyDto, @CurrentUser() user: any) {
+    return this.propertiesService.create(dto, user);
   }
 
   @ApiBearerAuth()
   @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdatePropertyDto) {
-    return this.propertiesService.update(id, dto);
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdatePropertyDto,
+    @CurrentUser() user: any,
+  ) {
+    return this.propertiesService.update(id, dto, user);
   }
 
   @ApiBearerAuth()
-  @Roles('admin')
+  @Roles('admin', 'staff')
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.propertiesService.remove(id);
+  remove(@Param('id') id: string, @CurrentUser() user: any) {
+    return this.propertiesService.remove(id, user);
   }
 }

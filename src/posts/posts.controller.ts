@@ -11,6 +11,7 @@ import {
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '../common/decorators/public.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { CreatePostDto, PostQueryDto, UpdatePostDto } from './dto/post.dto';
 import { PostsService } from './posts.service';
 
@@ -38,21 +39,25 @@ export class PostsController {
 
   @ApiBearerAuth()
   @Post()
-  create(@Body() dto: CreatePostDto) {
-    return this.postsService.create(dto);
+  create(@Body() dto: CreatePostDto, @CurrentUser() user: any) {
+    return this.postsService.create(dto, user?.id);
   }
 
   @ApiBearerAuth()
   @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdatePostDto) {
-    return this.postsService.update(id, dto);
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdatePostDto,
+    @CurrentUser() user: any,
+  ) {
+    return this.postsService.update(id, dto, user);
   }
 
   @ApiBearerAuth()
-  @Roles('admin')
+  @Roles('admin', 'staff')
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postsService.remove(id);
+  remove(@Param('id') id: string, @CurrentUser() user: any) {
+    return this.postsService.remove(id, user);
   }
 
   @Public()

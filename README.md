@@ -42,11 +42,11 @@ Chọn một trong các dịch vụ (free tier):
 
 | Dịch vụ | Link |
 |---------|------|
-| **Neon** (khuyên dùng) | https://neon.tech |
-| Supabase | https://supabase.com |
+| **Supabase** (khuyên dùng) | https://supabase.com |
+| Neon | https://neon.tech |
 | ElephantSQL | https://www.elephantsql.com |
 
-Tạo project → copy **connection string** (dạng `postgresql://user:pass@host/db?sslmode=require`).
+Tạo project → copy **connection string** (dạng `postgresql://postgres:PASSWORD@db.PROJECT_REF.supabase.co:5432/postgres?sslmode=require`).
 
 ### Bước 2: Cấu hình `.env`
 
@@ -60,7 +60,7 @@ Sửa `.env`:
 ```env
 PORT=3001
 CORS_ORIGIN=http://localhost:3000
-DATABASE_URL=postgresql://...dán-connection-string-từ-Neon...
+DATABASE_URL=postgresql://...dán-connection-string-từ-Supabase...
 JWT_SECRET=dev-secret-any-string
 ADMIN_EMAIL=admin@dhcenter.com
 ADMIN_PASSWORD=admin123456
